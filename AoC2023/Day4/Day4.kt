@@ -13,10 +13,11 @@ fun main() {
         val (winning, numbers) = l.map { it.split(" ") }
         val matches = numbers.filter { it in winning }.size
 
+        //Part 2
         val nCards = amount.getOrPut(index) { 1 }
         repeat(matches) { j ->
             val element = index+j+1
-            amount[element] = amount.getOrPut(element){ 1 }+nCards
+            amount[element] = amount.getOrPut(element) { 1 } + nCards
         }
 
         if (matches != 0) 1 shl matches-1 else 0
