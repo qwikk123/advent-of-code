@@ -4,7 +4,7 @@ import java.io.File
 
 fun main() {
     val input = File("aoc2023/Day4/input.txt").readLines()
-        .map { it.split(": ")[1].split(" |").map { it.trim().replace("  ", " ") } }
+        .map { it.split(":")[1].split("|").map { it.trim().replace("  ", " ") } }
 
     val amount = mutableMapOf<Int, Int>()
 
