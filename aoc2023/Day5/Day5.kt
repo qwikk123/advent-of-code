@@ -20,14 +20,21 @@ fun main() {
     val part1 = findLocations(part1Seeds, groups).values.min()
     println(part1)
 
-    println(part2(ranges, groups))
+    val test = part2(ranges, groups)
+    test.forEachIndexed { i, it ->
+        println("----- INDEX: $i")
+        println(it)
+    }
+    println(test.flatten().minOf { it.first })
 }
 
-private fun part2(ranges: List<LongRange>, groups: List<List<List<Long>>>): Long {
-    return ranges.map {range ->
+private fun part2(ranges: List<LongRange>, groups: List<List<List<Long>>>): List<List<LongRange>> {
+    return ranges.mapIndexed {index, range ->
         groups.fold(listOf(range)) { ranges, maps ->
-            println(ranges)
-            println(maps)
+            if (index == 6) {
+                println(ranges)
+                println(maps)
+            }
 
             val splitRanges = mutableListOf<LongRange>()
             val unChangedRanges = ranges.toMutableList()
@@ -35,6 +42,7 @@ private fun part2(ranges: List<LongRange>, groups: List<List<List<Long>>>): Long
                 val (to, from, length) = mapRange
                 val fromRange = from..<from+length
                 val toRange = to..<to+length
+                val offset = toRange.first-fromRange.first
 
                 val rangesToSplit = unChangedRanges.filter {
                     it.first <= fromRange.last && fromRange.first <= it.last
@@ -42,32 +50,37 @@ private fun part2(ranges: List<LongRange>, groups: List<List<List<Long>>>): Long
                 unChangedRanges.removeAll { it in rangesToSplit }
 
                 rangesToSplit.forEach {
-                    if (it.first < fromRange.first && it.last < fromRange.last) {
+                    //its end overlaps
+                    if (it.first < fromRange.first && it.last <= fromRange.last) {
                         unChangedRanges.add(it.first..<from)
-                        splitRanges.add(to..< to+it.last-fromRange.first)
+                        val newRange = fromRange.first.. it.last
+                        splitRanges.add(newRange.first+offset .. newRange.last+offset)
                     }
-                    else if (it.first > fromRange.first && it.last > fromRange.last) {
+                    //its start overlaps
+                    else if (it.first >= fromRange.first && it.last > fromRange.last) {
                         unChangedRanges.add(fromRange.last()+1 .. it.last)
-                        splitRanges.add(toRange.last()-(fromRange.last-it.first) .. toRange.last())
+                        val newRange = it.first..fromRange.last
+                        splitRanges.add(newRange.first+offset..newRange.last+offset)
                     }
+                    //it is around from
                     else if (it.first < fromRange.first && it.last > fromRange.last) {
                         unChangedRanges.add(it.first..<fromRange.first)
                         unChangedRanges.add(fromRange.last+1..it.last)
                         splitRanges.add(toRange)
                     }
+                    //from is around it
                     else {
-                        val diff = toRange.first-fromRange.first
-                        unChangedRanges.add(it.first+diff..it.last+diff)
+                        unChangedRanges.add(it.first+offset..it.last+offset)
                     }
                 }
 
-                println("rangestosplit $rangesToSplit in $mapRange -> $fromRange")
+                if (index == 6) println("rangestosplit $rangesToSplit in $mapRange -> $fromRange")
 
             }
 
             splitRanges+unChangedRanges
         }
-    }.flatten().minOf { it.first }
+    }
 }
 
 private fun findLocations(seeds: Sequence<Long>, maps: List<List<List<Long>>>): MutableMap<Long, Long> {
