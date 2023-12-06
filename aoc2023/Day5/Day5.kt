@@ -22,8 +22,8 @@ fun main() {
     val part1 = findLocations(part1Seeds, groups).values.min()
     println(part1)
 
-    val test = part2(ranges, groups)
-    println(test)
+    val part2 = part2(ranges, groups)
+    println(part2)
 }
 
 private fun part2(ranges: List<Pair<Long, Long>>, groups: List<List<List<Long>>>): Long {
