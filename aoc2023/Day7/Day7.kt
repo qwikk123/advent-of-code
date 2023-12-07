@@ -43,6 +43,6 @@ fun main() {
         { pair -> valueMap[pair.first[4].toString()] }
     ))
 
-    val sum = sorted.mapIndexed{index, pair -> pair.second.toLong()*(index+1) }.sum()
+    val sum = sorted.mapIndexed{index, pair -> pair.second*(index+1) }.sum()
     println(sum)
 }
