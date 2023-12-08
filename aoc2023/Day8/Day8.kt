@@ -1,6 +1,7 @@
 package aoc2023.Day8
 
 import java.io.File
+import kotlin.math.abs
 
 fun main() {
     val input = File("aoc2023/Day8/input.txt").readText().split("\n\n")
@@ -12,21 +13,36 @@ fun main() {
         val pair = it.takeLast(10).trim('(',')').split(", ")
         network[key] = Pair(pair.first(), pair.last())
     }
-    var currentKey = "AAA"
-    var count = 0
-    while (currentKey != "ZZZ") {
-        for (d in leftRight) {
-            if (currentKey == "ZZZ") break
-            val pair = network[currentKey]!!
-            when(d) {
-                'L' -> currentKey = pair.first
-                'R' -> currentKey = pair.second
+    val start = networkStrings.map { it.take(3) }.filter { it.endsWith("A") }
+    val counts = mutableListOf(*start.map{0L}.toTypedArray())
+    start.forEachIndexed { index, s ->
+        var current = s
+        while(current.last() != 'Z') {
+            for (d in leftRight) {
+                if (current.last() == 'Z') break
+                counts[index]++
+                val pair = network[current]!!
+                when(d) {
+                    'L' -> current = pair.first
+                    'R' -> current = pair.second
+                }
             }
-            count++
         }
     }
-    println(leftRight)
-    println(network)
-    println(count)
-    println(currentKey)
+
+    var lcm = 1L
+    counts.forEach {
+        lcm = lcm(lcm, it)
+    }
+    println(counts)
+    println(lcm)
+}
+
+fun gcd(a: Long, b: Long): Long {
+    if (b == 0L) return a
+    return gcd(b, a % b)
+}
+
+fun lcm(a: Long, b: Long): Long {
+    return abs(a * b) / gcd(a, b)
 }
