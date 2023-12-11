@@ -18,6 +18,19 @@ fun main() {
 
     iterate(first, path, input)
     println(path.size/2)
+
+    val part2 = input.mapIndexed { y, s ->
+        s.mapIndexed { x, c ->
+            if (Point(x,y) in path) 0
+            else {
+                val crossingsX = path.filter { it.y == y && it.x > x && input[it.y][it.x] in listOf('|', 'L', 'J', 'S') }
+                if (crossingsX.size % 2 != 0) 1
+                else 0
+            }
+        }.sum()
+    }.sum()
+
+    println(part2)
 }
 
 fun iterate(point: Point, path: MutableList<Point>, input: List<String>) {
