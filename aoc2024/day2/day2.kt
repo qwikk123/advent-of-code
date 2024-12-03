@@ -12,8 +12,8 @@ fun main() {
     }
     val isSafeDampened = { r: List<Int> -> r.indices.any { remove -> isSafe(r.filterIndexed { i, _ -> i != remove }) } }
 
-    val part1 = input.count { isSafe(it) }
-    val part2 = input.count { isSafeDampened(it) }
+    val part1 = input.count(isSafe)
+    val part2 = input.count(isSafeDampened)
 
     println(part1)
     println(part2)
